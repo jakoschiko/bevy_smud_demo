@@ -12,6 +12,9 @@ bevy_smud = { git = "https://github.com/johanhelsing/bevy_smud.git", rev = "ffa2
 egui_extras = { version = "0.33.0", features = ["syntect"] }
 include_dir = "0.7.4"
 
+[target.wasm32-unknown-unknown.dependencies]
+getrandom = { version = "0.3.3", features = ["wasm_js"] }
+
 [profile.dev]
 opt-level = 1
 

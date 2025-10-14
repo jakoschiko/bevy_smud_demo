@@ -167,6 +167,8 @@ fn main() {
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
                 title: "Bevy Smud Demo".into(),
+                #[cfg(all(target_family = "wasm", target_os = "unknown"))]
+                fit_canvas_to_parent: true,
                 ..default()
             }),
             ..default()

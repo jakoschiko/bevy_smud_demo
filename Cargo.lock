@@ -1309,6 +1309,7 @@ dependencies = [
  "bevy_egui",
  "bevy_smud",
  "egui_extras",
+ "getrandom",
  "include_dir",
 ]
 
