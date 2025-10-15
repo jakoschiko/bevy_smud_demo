@@ -86,7 +86,7 @@ fn update(
     // Pick shape
     for (shape_state, &interaction) in picking_query {
         if interaction == PickingInteraction::Pressed {
-            global_state.selected_tab = SelectedTab::Shape(shape_state.id);
+            global_state.select_tab(SelectedTab::Shape(shape_state.id));
         }
     }
 }
