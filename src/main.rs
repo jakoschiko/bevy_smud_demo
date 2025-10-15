@@ -100,10 +100,12 @@ fn gui(
     mut shaders: ResMut<Assets<Shader>>,
     mut shape_query: Query<(Entity, &mut Transform, &mut SmudShape, &mut ShapeState)>,
 ) -> Result {
+    let ctx = contexts.ctx_mut()?;
+
     // Build UI
     egui::SidePanel::left("side_panel")
         .default_width(consts::SIDE_PANEL_WIDTH)
-        .show(contexts.ctx_mut()?, |ui| {
+        .show(ctx, |ui| {
             // UI with info about this demo
             about(ui);
 
@@ -416,8 +418,11 @@ fn shader_editor(ui: &mut egui::Ui, templates: &Templates, shape_state: &mut Sha
             compile_shader = true;
         }
 
-        ui.label("or press ctrl+enter");
-        let ctrl_return = egui::KeyboardShortcut::new(egui::Modifiers::CTRL, egui::Key::Enter);
+        let ctrl_return = egui::KeyboardShortcut::new(egui::Modifiers::COMMAND, egui::Key::Enter);
+        ui.label(format!(
+            "or press {}",
+            ui.ctx().format_shortcut(&ctrl_return)
+        ));
         if ui.input_mut(|i| i.consume_shortcut(&ctrl_return)) {
             compile_shader = true;
         }
