@@ -22,8 +22,8 @@ pub struct GlobalState {
 impl Default for GlobalState {
     fn default() -> Self {
         Self {
-            camera_position: Vec2::new(-consts::SIDE_PANEL_WIDTH / 2.0, 0.0),
-            background_color: egui::Color32::from_rgb(43, 44, 47), // Same as default ClearColor
+            camera_position: consts::DEFAULT_CAMERA_POSITION,
+            background_color: consts::DEFAULT_BACKGROUND_COLOR,
             next_shader_id: 0,
             next_shape_id: 0,
             selected_tab: SelectedTab::Global,

@@ -1,8 +1,8 @@
 use bevy::prelude::*;
-use bevy_egui::egui;
-use bevy_smud::{BlendMode, SmudShape};
+use bevy_smud::SmudShape;
 
 use crate::{
+    consts,
     shader::create_shader,
     state::{GlobalState, ShaderKind, ShapeState},
     templates::Templates,
@@ -20,11 +20,11 @@ pub fn add_shape(
 
     let shape_state = ShapeState {
         id: state.create_shape(),
-        position: Vec3::ZERO,
-        rotation: 0.0,
-        scale: 1.0,
-        bounds_length: 1000.0,
-        color: egui::Color32::from_rgb(200, 100, 100),
+        position: consts::DEFAULT_SHAPE_POSITION,
+        rotation: consts::DEFAULT_SHAPE_ROTATION,
+        scale: consts::DEFAULT_SHAPE_SCALE,
+        bounds_length: consts::DEFAULT_SHAPE_BOUNDS_LENGTH,
+        color: consts::DEFAULT_SHAPE_COLOR,
         selected_shader: ShaderKind::Sdf,
         sdf_code: templates
             .default_template(ShaderKind::Sdf)
@@ -34,8 +34,8 @@ pub fn add_shape(
             .default_template(ShaderKind::Fill)
             .map(|t| t.code.clone())
             .unwrap_or_default(),
-        params: Vec4::ZERO,
-        blend_mode: BlendMode::default(),
+        params: consts::DEFAULT_SHAPE_PARAMS,
+        blend_mode: consts::DEFAULT_SHAPE_BLEND_MODE,
     };
 
     update_shape(

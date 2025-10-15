@@ -239,9 +239,14 @@ fn global_settings(ui: &mut egui::Ui, global_state: &mut GlobalState) {
         .show(ui, |ui| {
             ui.label("Camera position:");
             ui.horizontal(|ui| {
+                if ui.button("⟲").clicked() {
+                    global_state.camera_position = consts::DEFAULT_CAMERA_POSITION;
+                };
+                ui.label("x");
                 egui::DragValue::new(&mut global_state.camera_position.x)
                     .speed(5.0)
                     .ui(ui);
+                ui.label("y");
                 egui::DragValue::new(&mut global_state.camera_position.y)
                     .speed(5.0)
                     .ui(ui);
@@ -249,7 +254,12 @@ fn global_settings(ui: &mut egui::Ui, global_state: &mut GlobalState) {
             ui.end_row();
 
             ui.label("Background color:");
-            ui.color_edit_button_srgba(&mut global_state.background_color);
+            ui.horizontal(|ui| {
+                if ui.button("⟲").clicked() {
+                    global_state.background_color = consts::DEFAULT_BACKGROUND_COLOR;
+                };
+                ui.color_edit_button_srgba(&mut global_state.background_color);
+            });
             ui.end_row();
         });
 }
@@ -262,12 +272,18 @@ fn shape_settings(ui: &mut egui::Ui, shape_state: &mut ShapeState) {
         .show(ui, |ui| {
             ui.label("Position:");
             ui.horizontal(|ui| {
+                if ui.button("⟲").clicked() {
+                    shape_state.position = consts::DEFAULT_SHAPE_POSITION;
+                };
+                ui.label("x");
                 egui::DragValue::new(&mut shape_state.position.x)
                     .speed(5.0)
                     .ui(ui);
+                ui.label("y");
                 egui::DragValue::new(&mut shape_state.position.y)
                     .speed(5.0)
                     .ui(ui);
+                ui.label("z");
                 egui::DragValue::new(&mut shape_state.position.z)
                     .speed(1.0)
                     .ui(ui);
@@ -275,58 +291,90 @@ fn shape_settings(ui: &mut egui::Ui, shape_state: &mut ShapeState) {
             ui.end_row();
 
             ui.label("Rotation:");
-            ui.add(
-                egui::DragValue::new(&mut shape_state.rotation)
-                    .min_decimals(2)
-                    .speed(TAU / 50.0),
-            );
+            ui.horizontal(|ui| {
+                if ui.button("⟲").clicked() {
+                    shape_state.rotation = consts::DEFAULT_SHAPE_ROTATION;
+                };
+                ui.add(
+                    egui::DragValue::new(&mut shape_state.rotation)
+                        .min_decimals(2)
+                        .speed(TAU / 50.0),
+                );
+            });
             ui.end_row();
 
             ui.label("Scale:");
-            ui.add(
-                egui::DragValue::new(&mut shape_state.scale)
-                    .min_decimals(1)
-                    .speed(1.0 / 5.0),
-            );
+            ui.horizontal(|ui| {
+                if ui.button("⟲").clicked() {
+                    shape_state.scale = consts::DEFAULT_SHAPE_SCALE;
+                };
+                ui.add(
+                    egui::DragValue::new(&mut shape_state.scale)
+                        .min_decimals(1)
+                        .speed(1.0 / 5.0),
+                );
+            });
             ui.end_row();
 
             ui.label("Color:");
-            ui.color_edit_button_srgba(&mut shape_state.color);
+            ui.horizontal(|ui| {
+                if ui.button("⟲").clicked() {
+                    shape_state.color = consts::DEFAULT_SHAPE_COLOR;
+                };
+                ui.color_edit_button_srgba(&mut shape_state.color);
+            });
             ui.end_row();
 
             ui.label("Bounds length:");
-            egui::Slider::new(&mut shape_state.bounds_length, 0.0..=2000.0).ui(ui);
+            ui.horizontal(|ui| {
+                if ui.button("⟲").clicked() {
+                    shape_state.bounds_length = consts::DEFAULT_SHAPE_BOUNDS_LENGTH;
+                };
+                egui::Slider::new(&mut shape_state.bounds_length, 0.0..=2000.0).ui(ui);
+            });
             ui.end_row();
 
             ui.label("Params:");
             ui.horizontal(|ui| {
-                egui::DragValue::new(&mut shape_state.params[0])
+                if ui.button("⟲").clicked() {
+                    shape_state.params = consts::DEFAULT_SHAPE_PARAMS;
+                };
+                ui.label("x");
+                egui::DragValue::new(&mut shape_state.params.x)
                     .speed(1.0)
                     .ui(ui);
-                egui::DragValue::new(&mut shape_state.params[1])
+                ui.label("y");
+                egui::DragValue::new(&mut shape_state.params.y)
                     .speed(1.0)
                     .ui(ui);
-                egui::DragValue::new(&mut shape_state.params[2])
+                ui.label("z");
+                egui::DragValue::new(&mut shape_state.params.z)
                     .speed(1.0)
                     .ui(ui);
-                egui::DragValue::new(&mut shape_state.params[3])
+                ui.label("w");
+                egui::DragValue::new(&mut shape_state.params.w)
                     .speed(1.0)
                     .ui(ui);
             });
             ui.end_row();
 
             ui.label("Blend mode:");
-            egui::ComboBox::from_id_salt("blend_mode")
-                .selected_text(format!("{:?}", shape_state.blend_mode))
-                .show_ui(ui, |ui| {
-                    for blend_mode in [BlendMode::Alpha, BlendMode::Additive] {
-                        ui.selectable_value(
-                            &mut shape_state.blend_mode,
-                            blend_mode,
-                            format!("{blend_mode:?}"),
-                        );
-                    }
-                });
+            ui.horizontal(|ui| {
+                if ui.button("⟲").clicked() {
+                    shape_state.blend_mode = consts::DEFAULT_SHAPE_BLEND_MODE;
+                };
+                egui::ComboBox::from_id_salt("blend_mode")
+                    .selected_text(format!("{:?}", shape_state.blend_mode))
+                    .show_ui(ui, |ui| {
+                        for blend_mode in [BlendMode::Alpha, BlendMode::Additive] {
+                            ui.selectable_value(
+                                &mut shape_state.blend_mode,
+                                blend_mode,
+                                format!("{blend_mode:?}"),
+                            );
+                        }
+                    });
+            });
             ui.end_row();
         });
 }
