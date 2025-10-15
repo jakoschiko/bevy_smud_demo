@@ -1,0 +1,60 @@
+name: GitHub Pages
+
+on:
+  # Triggers the workflow on push events but only for the "main" branch
+  push:
+    branches: [main]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  # Run trunk build --release --public-url /bevy_smud_demo/
+  bundle-wasm:
+    name: Bundle WASM
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+      - name: Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-bundle-wasm-${{ hashFiles('**/Cargo.toml') }}
+      - name: Install stable toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - name: Install trunk
+        uses: jetli/trunk-action@v0.5.1
+      - name: Run trunk build
+        run: trunk build --release --public-url /bevy_smud_demo/
+      - name: Upload static files as artifacts
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist/
+
+  # Deploy to GitHub Pages
+  deploy:
+    name: Deploy
+    needs: bundle-wasm
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy static files to GitHub Pages
+        uses: actions/deploy-pages@v4
