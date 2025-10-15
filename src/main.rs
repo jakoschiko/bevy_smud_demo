@@ -492,6 +492,7 @@ fn gui(
                                                     };
                                                     code.clear();
                                                     code.push_str(&template.code);
+                                                    compile_shader = true;
                                                 }
                                             }
                                         })
