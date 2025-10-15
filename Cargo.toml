@@ -10,6 +10,7 @@ bevy = { version = "0.17", default-features = false, features = ["bevy_post_proc
 bevy_egui = "0.38"
 bevy_smud = { git = "https://github.com/johanhelsing/bevy_smud.git", rev = "ffa25ec430a6f33b266da5351604e6f88125e68f" }
 egui_extras = { version = "0.33.0", default-features = false, features = ["syntect"] }
+git-version = "0.3.9"
 include_dir = "0.7.4"
 
 [target.wasm32-unknown-unknown.dependencies]

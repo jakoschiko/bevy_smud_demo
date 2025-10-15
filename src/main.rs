@@ -10,9 +10,10 @@ use std::{collections::BTreeSet, f32::consts::TAU};
 use bevy::{picking::hover::PickingInteraction, prelude::*};
 use bevy_egui::{
     EguiContexts, EguiPlugin, EguiPrimaryContextPass,
-    egui::{self, Widget},
+    egui::{self, Widget, special_emojis},
 };
 use bevy_smud::prelude::*;
+use git_version::*;
 
 use crate::{
     shape::{add_shape, clone_shape, update_shape},
@@ -103,7 +104,10 @@ fn gui(
     egui::SidePanel::left("side_panel")
         .default_width(consts::SIDE_PANEL_WIDTH)
         .show(contexts.ctx_mut()?, |ui| {
-            ui.add_space(4.0);
+            // UI with info about this demo
+            about(ui);
+
+            ui.separator();
 
             // UI for selecting/editing tabs
             tab_bar(
@@ -151,6 +155,21 @@ fn gui(
         });
 
     Ok(())
+}
+
+fn about(ui: &mut egui::Ui) {
+    ui.heading(format!("Bevy Smud Demo ({})", git_version!()));
+
+    ui.horizontal(|ui| {
+        ui.add(egui::Hyperlink::from_label_and_url(
+            format!("{} bevy_smud", special_emojis::GITHUB),
+            "https://github.com/johanhelsing/bevy_smud",
+        ));
+        ui.add(egui::Hyperlink::from_label_and_url(
+            format!("{} bevy_smud_demo", special_emojis::GITHUB),
+            "https://github.com/jakoschiko/bevy_smud_demo",
+        ));
+    });
 }
 
 fn tab_bar(
