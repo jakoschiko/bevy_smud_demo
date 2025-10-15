@@ -168,7 +168,9 @@ fn main() {
             primary_window: Some(Window {
                 title: "Bevy Smud Demo".into(),
                 #[cfg(all(target_family = "wasm", target_os = "unknown"))]
-                fit_canvas_to_parent: true,
+                fit_canvas_to_parent: true, // We need this to fill the entire web page
+                #[cfg(all(target_family = "wasm", target_os = "unknown"))]
+                prevent_default_event_handling: false, // We need this for copy/paste
                 ..default()
             }),
             ..default()
