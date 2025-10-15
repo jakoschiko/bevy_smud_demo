@@ -10,7 +10,7 @@ use include_dir::include_dir;
 
 const SIDE_PANEL_WIDTH: f32 = 550.0;
 const DEFAULT_SDF_TEMPLATE: &str = "circle";
-const DEFAULT_FILL_TEMPLATE: &str = "simple";
+const DEFAULT_FILL_TEMPLATE: &str = "cubic_falloff";
 static SDF_TEMPLATE_DIR: include_dir::Dir = include_dir!("$CARGO_MANIFEST_DIR/templates/sdf");
 static FILL_TEMPLATE_DIR: include_dir::Dir = include_dir!("$CARGO_MANIFEST_DIR/templates/fill");
 
@@ -573,7 +573,7 @@ fn add_shape(
         position: Vec3::ZERO,
         rotation: 0.0,
         scale: 1.0,
-        bounds_length: 500.0,
+        bounds_length: 1000.0,
         color: egui::Color32::from_rgb(200, 100, 100),
         selected_shader: ShaderKind::Sdf,
         sdf_code: templates
