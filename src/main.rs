@@ -5,7 +5,11 @@ mod state;
 mod templates;
 mod util;
 
-use std::{collections::BTreeSet, f32::consts::TAU};
+use std::{
+    collections::BTreeSet,
+    f32::consts::TAU,
+    time::{SystemTime, UNIX_EPOCH},
+};
 
 use bevy::{
     picking::hover::PickingInteraction,
@@ -97,9 +101,13 @@ fn update(
     }
 }
 
-fn screenshot(mut commands: Commands, time: Res<Time>, input: Res<ButtonInput<KeyCode>>) {
+fn screenshot(mut commands: Commands, input: Res<ButtonInput<KeyCode>>) {
     if input.just_pressed(KeyCode::F9) {
-        let path = format!("./screenshot-{}.png", time.elapsed().as_millis());
+        let time = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
+        let path = format!("./screenshot-{time}.png");
         commands
             .spawn(Screenshot::primary_window())
             .observe(save_to_disk(path));
