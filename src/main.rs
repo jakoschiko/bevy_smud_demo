@@ -7,7 +7,11 @@ mod util;
 
 use std::{collections::BTreeSet, f32::consts::TAU};
 
-use bevy::{picking::hover::PickingInteraction, prelude::*};
+use bevy::{
+    picking::hover::PickingInteraction,
+    prelude::*,
+    render::view::screenshot::{Screenshot, save_to_disk},
+};
 use bevy_egui::{
     EguiContexts, EguiPlugin, EguiPrimaryContextPass,
     egui::{self, Widget, special_emojis},
@@ -42,6 +46,7 @@ fn main() {
         .insert_resource(GlobalState::default())
         .add_systems(Startup, setup)
         .add_systems(Update, update)
+        .add_systems(Update, screenshot)
         .add_systems(EguiPrimaryContextPass, gui)
         .run();
 }
@@ -89,6 +94,15 @@ fn update(
         if interaction == PickingInteraction::Pressed {
             global_state.select_tab(SelectedTab::Shape(shape_state.id));
         }
+    }
+}
+
+fn screenshot(mut commands: Commands, time: Res<Time>, input: Res<ButtonInput<KeyCode>>) {
+    if input.just_pressed(KeyCode::F9) {
+        let path = format!("./screenshot-{}.png", time.elapsed().as_millis());
+        commands
+            .spawn(Screenshot::primary_window())
+            .observe(save_to_disk(path));
     }
 }
 
