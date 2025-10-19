@@ -21,6 +21,7 @@ use bevy_egui::{
     EguiContexts, EguiPlugin, EguiPrimaryContextPass,
     egui::{self, Widget, special_emojis},
 };
+use bevy_pancam::{PanCam, PanCamPlugin};
 use bevy_smud::prelude::*;
 use git_version::*;
 
@@ -44,6 +45,7 @@ fn main() {
         .add_plugins(SmudPlugin)
         .add_plugins(SmudPickingPlugin)
         .add_plugins(EguiPlugin::default())
+        .add_plugins(PanCamPlugin::default())
         .insert_resource(Templates::default())
         .insert_resource(GlobalState::default())
         .add_systems(Startup, setup)
@@ -87,6 +89,7 @@ fn setup(
     commands.spawn((
         ShapeCamera,
         Camera2d,
+        PanCam::default(),
         Msaa::Off,
         Transform::from_translation(global_state.camera_position.extend(0.0)),
     ));
@@ -99,14 +102,13 @@ fn update(
     mut global_state: ResMut<GlobalState>,
     mut clear_color: ResMut<ClearColor>,
     picking_query: Query<(&ShapeState, &PickingInteraction), Changed<PickingInteraction>>,
-    mut camera_query: Single<&mut Transform, With<ShapeCamera>>,
+    camera_transform: Single<&Transform, With<ShapeCamera>>,
 ) {
     // Update background
     clear_color.0 = convert_color(global_state.background_color);
 
     // Update camera
-    let camera_transform = camera_query.as_mut();
-    *camera_transform = Transform::from_translation(global_state.camera_position.extend(0.0));
+    global_state.camera_position = camera_transform.translation.xy();
 
     // Pick shape
     for (shape_state, &interaction) in picking_query {
