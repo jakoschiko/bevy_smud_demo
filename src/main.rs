@@ -12,9 +12,13 @@ use std::{
 };
 
 use bevy::{
+    input::ButtonState,
     picking::hover::PickingInteraction,
     prelude::*,
     render::view::screenshot::{Screenshot, save_to_disk},
+    winit::default_event_handling::{
+        DefaultEventHandling, DefaultEventKeyMatcher, DefaultEventModifiersMatcher,
+    },
 };
 use bevy_egui::{
     EguiContexts, EguiPlugin, EguiPrimaryContextPass,
@@ -35,10 +39,7 @@ fn main() {
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
                 title: "Bevy Smud Demo".into(),
-                #[cfg(all(target_family = "wasm", target_os = "unknown"))]
-                fit_canvas_to_parent: true, // We need this to fill the entire web page
-                #[cfg(all(target_family = "wasm", target_os = "unknown"))]
-                prevent_default_event_handling: false, // We need this for copy/paste
+                fit_canvas_to_parent: true, // We need this for wasm to fill the entire web page
                 ..default()
             }),
             ..default()
@@ -64,7 +65,49 @@ fn setup(
     mut global_state: ResMut<GlobalState>,
     mut clear_color: ResMut<ClearColor>,
     mut shaders: ResMut<Assets<Shader>>,
+    window_query: Query<Option<&mut DefaultEventHandling>, With<Window>>,
 ) {
+    // For wasm allow default event handling for some useful shortcuts
+    for mut event_handler in window_query.into_iter().flatten() {
+        // Allow copy
+        event_handler.add_exception_for_key(DefaultEventKeyMatcher {
+            key_code: Some(KeyCode::KeyC),
+            modifiers: DefaultEventModifiersMatcher {
+                ctrl: Some(ButtonState::Pressed),
+                ..default()
+            },
+            ..default()
+        });
+        // Allow cut
+        event_handler.add_exception_for_key(DefaultEventKeyMatcher {
+            key_code: Some(KeyCode::KeyX),
+            modifiers: DefaultEventModifiersMatcher {
+                ctrl: Some(ButtonState::Pressed),
+                ..default()
+            },
+            ..default()
+        });
+        // Allow paste
+        event_handler.add_exception_for_key(DefaultEventKeyMatcher {
+            key_code: Some(KeyCode::KeyV),
+            modifiers: DefaultEventModifiersMatcher {
+                ctrl: Some(ButtonState::Pressed),
+                ..default()
+            },
+            ..default()
+        });
+        // Allow page reload
+        event_handler.add_exception_for_key(DefaultEventKeyMatcher {
+            key_code: Some(KeyCode::F5),
+            ..default()
+        });
+        // Allow web developer tools
+        event_handler.add_exception_for_key(DefaultEventKeyMatcher {
+            key_code: Some(KeyCode::F12),
+            ..default()
+        });
+    }
+
     // Initialize background
     clear_color.0 = convert_color(global_state.background_color);
 
