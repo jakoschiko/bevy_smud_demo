@@ -12,13 +12,10 @@ use std::{
 };
 
 use bevy::{
-    input::ButtonState,
     picking::hover::PickingInteraction,
     prelude::*,
     render::view::screenshot::{Screenshot, save_to_disk},
-    winit::default_event_handling::{
-        DefaultEventHandling, DefaultEventKeyMatcher, DefaultEventModifiersMatcher,
-    },
+    winit::default_event_handling::{DefaultEventHandling, DefaultEventKeyMatcher},
 };
 use bevy_egui::{
     EguiContexts, EguiPlugin, EguiPrimaryContextPass,
@@ -67,42 +64,17 @@ fn setup(
     mut shaders: ResMut<Assets<Shader>>,
     window_query: Query<Option<&mut DefaultEventHandling>, With<Window>>,
 ) {
-    // For wasm allow default event handling for some useful shortcuts
-    for mut event_handler in window_query.into_iter().flatten() {
-        // Allow copy
-        event_handler.add_exception_for_key(DefaultEventKeyMatcher {
-            key_code: Some(KeyCode::KeyC),
-            modifiers: DefaultEventModifiersMatcher {
-                ctrl: Some(ButtonState::Pressed),
-                ..default()
-            },
-            ..default()
-        });
-        // Allow cut
-        event_handler.add_exception_for_key(DefaultEventKeyMatcher {
-            key_code: Some(KeyCode::KeyX),
-            modifiers: DefaultEventModifiersMatcher {
-                ctrl: Some(ButtonState::Pressed),
-                ..default()
-            },
-            ..default()
-        });
-        // Allow paste
-        event_handler.add_exception_for_key(DefaultEventKeyMatcher {
-            key_code: Some(KeyCode::KeyV),
-            modifiers: DefaultEventModifiersMatcher {
-                ctrl: Some(ButtonState::Pressed),
-                ..default()
-            },
-            ..default()
-        });
+    // For wasm, allow default event handling for some useful shortcuts
+    for mut default_event_handling in window_query.into_iter().flatten() {
+        // Allow clipboard
+        default_event_handling.add_exception_for_clipboard_keys();
         // Allow page reload
-        event_handler.add_exception_for_key(DefaultEventKeyMatcher {
+        default_event_handling.add_exception_for_key(DefaultEventKeyMatcher {
             key_code: Some(KeyCode::F5),
             ..default()
         });
         // Allow web developer tools
-        event_handler.add_exception_for_key(DefaultEventKeyMatcher {
+        default_event_handling.add_exception_for_key(DefaultEventKeyMatcher {
             key_code: Some(KeyCode::F12),
             ..default()
         });
