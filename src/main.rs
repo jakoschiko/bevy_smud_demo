@@ -15,7 +15,7 @@ use bevy::{
     picking::hover::PickingInteraction,
     prelude::*,
     render::view::screenshot::{Screenshot, save_to_disk},
-    winit::default_event_handling::{DefaultEventHandling, DefaultEventKeyMatcher},
+    window::default_event_handling::KeyEventException,
 };
 use bevy_egui::{
     EguiContexts, EguiPlugin, EguiPrimaryContextPass,
@@ -35,14 +35,25 @@ use crate::{
 
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins.set(WindowPlugin {
-            primary_window: Some(Window {
-                title: "Bevy Smud Demo".into(),
-                fit_canvas_to_parent: true, // We need this for wasm to fill the entire web page
+        .add_plugins(
+            DefaultPlugins.set(WindowPlugin {
+                primary_window: Some(Window {
+                    title: "Bevy Smud Demo".into(),
+                    // We need this for wasm to fill the entire web page
+                    fit_canvas_to_parent: true,
+                    // On wasm, prevent default event handling for most events
+                    default_event_handling: DefaultEventHandling::prevent_default(true)
+                        // Allow clipboard
+                        .exceptions_for_clipboard_keys()
+                        // Allow page reload
+                        .exception_for_key(KeyEventException::new(KeyCode::F5))
+                        // Allow web developer tools
+                        .exception_for_key(KeyEventException::new(KeyCode::F12)),
+                    ..default()
+                }),
                 ..default()
             }),
-            ..default()
-        }))
+        )
         .add_plugins(SmudPlugin)
         .add_plugins(SmudPickingPlugin)
         .add_plugins(EguiPlugin::default())
@@ -65,24 +76,7 @@ fn setup(
     mut global_state: ResMut<GlobalState>,
     mut clear_color: ResMut<ClearColor>,
     mut shaders: ResMut<Assets<Shader>>,
-    window_query: Query<Option<&mut DefaultEventHandling>, With<Window>>,
 ) {
-    // For wasm, allow default event handling for some useful shortcuts
-    for mut default_event_handling in window_query.into_iter().flatten() {
-        // Allow clipboard
-        default_event_handling.add_exception_for_clipboard_keys();
-        // Allow page reload
-        default_event_handling.add_exception_for_key(DefaultEventKeyMatcher {
-            key_code: Some(KeyCode::F5),
-            ..default()
-        });
-        // Allow web developer tools
-        default_event_handling.add_exception_for_key(DefaultEventKeyMatcher {
-            key_code: Some(KeyCode::F12),
-            ..default()
-        });
-    }
-
     // Initialize background
     clear_color.0 = convert_color(global_state.background_color);
 

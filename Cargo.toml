@@ -61,6 +61,7 @@ bevy_ui_render = { git = "https://github.com/jakoschiko/bevy.git", branch = "def
 bevy_utils = { git = "https://github.com/jakoschiko/bevy.git", branch = "default-event-handling" }
 bevy_window = { git = "https://github.com/jakoschiko/bevy.git", branch = "default-event-handling" }
 bevy_winit = { git = "https://github.com/jakoschiko/bevy.git", branch = "default-event-handling" }
+bevy_egui = { git = "https://github.com/jakoschiko/bevy_egui.git", branch = "default-event-handling" }
 
 # Optimize for small binary size
 [profile.release]
