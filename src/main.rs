@@ -45,7 +45,7 @@ fn main() {
         .add_plugins(SmudPlugin)
         .add_plugins(SmudPickingPlugin)
         .add_plugins(EguiPlugin::default())
-        .add_plugins(PanCamPlugin::default())
+        .add_plugins(PanCamPlugin)
         .insert_resource(Templates::default())
         .insert_resource(GlobalState::default())
         .add_systems(Startup, setup)
