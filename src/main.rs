@@ -89,7 +89,10 @@ fn setup(
     commands.spawn((
         ShapeCamera,
         Camera2d,
-        PanCam::default(),
+        PanCam {
+            grab_buttons: vec![MouseButton::Left],
+            ..default()
+        },
         Msaa::Off,
         Transform::from_translation(consts::DEFAULT_CAMERA_POSITION.extend(0.0)),
     ));
@@ -101,15 +104,19 @@ fn setup(
 fn update(
     mut global_state: ResMut<GlobalState>,
     mut clear_color: ResMut<ClearColor>,
+    input: Res<ButtonInput<MouseButton>>,
     picking_query: Query<(&ShapeState, &PickingInteraction), Changed<PickingInteraction>>,
 ) {
     // Update background
     clear_color.0 = convert_color(global_state.background_color);
 
     // Pick shape
-    for (shape_state, &interaction) in picking_query {
-        if interaction == PickingInteraction::Pressed {
-            global_state.select_tab(SelectedTab::Shape(shape_state.id));
+    if input.just_pressed(MouseButton::Right) {
+        for (shape_state, &interaction) in picking_query {
+            if interaction == PickingInteraction::Pressed {
+                global_state.select_tab(SelectedTab::Shape(shape_state.id));
+                break;
+            }
         }
     }
 }
