@@ -11,7 +11,6 @@ type ShapeId = u32;
 
 #[derive(Resource)]
 pub struct GlobalState {
-    pub camera_position: Vec2,
     pub background_color: egui::Color32,
     next_shader_id: ShapeId,
     next_shape_id: ShapeId,
@@ -22,7 +21,6 @@ pub struct GlobalState {
 impl Default for GlobalState {
     fn default() -> Self {
         Self {
-            camera_position: consts::DEFAULT_CAMERA_POSITION,
             background_color: consts::DEFAULT_BACKGROUND_COLOR,
             next_shader_id: 0,
             next_shape_id: 0,

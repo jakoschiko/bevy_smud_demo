@@ -91,7 +91,7 @@ fn setup(
         Camera2d,
         PanCam::default(),
         Msaa::Off,
-        Transform::from_translation(global_state.camera_position.extend(0.0)),
+        Transform::from_translation(consts::DEFAULT_CAMERA_POSITION.extend(0.0)),
     ));
 
     // Initialize shape
@@ -102,13 +102,9 @@ fn update(
     mut global_state: ResMut<GlobalState>,
     mut clear_color: ResMut<ClearColor>,
     picking_query: Query<(&ShapeState, &PickingInteraction), Changed<PickingInteraction>>,
-    camera_transform: Single<&Transform, With<ShapeCamera>>,
 ) {
     // Update background
     clear_color.0 = convert_color(global_state.background_color);
-
-    // Update camera
-    global_state.camera_position = camera_transform.translation.xy();
 
     // Pick shape
     for (shape_state, &interaction) in picking_query {
@@ -297,22 +293,6 @@ fn global_settings(ui: &mut egui::Ui, global_state: &mut GlobalState) {
         .spacing([40.0, 4.0])
         .striped(true)
         .show(ui, |ui| {
-            ui.label("Camera position:");
-            ui.horizontal(|ui| {
-                if ui.button("⟲").clicked() {
-                    global_state.camera_position = consts::DEFAULT_CAMERA_POSITION;
-                };
-                ui.label("x");
-                egui::DragValue::new(&mut global_state.camera_position.x)
-                    .speed(5.0)
-                    .ui(ui);
-                ui.label("y");
-                egui::DragValue::new(&mut global_state.camera_position.y)
-                    .speed(5.0)
-                    .ui(ui);
-            });
-            ui.end_row();
-
             ui.label("Background color:");
             ui.horizontal(|ui| {
                 if ui.button("⟲").clicked() {
