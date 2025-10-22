@@ -20,6 +20,7 @@ use bevy::{
 use bevy_egui::{
     EguiContexts, EguiPlugin, EguiPrimaryContextPass,
     egui::{self, Widget, special_emojis},
+    input::EguiWantsInput,
 };
 use bevy_pancam::{PanCam, PanCamPlugin};
 use bevy_smud::prelude::*;
@@ -104,11 +105,16 @@ fn setup(
 fn update(
     mut global_state: ResMut<GlobalState>,
     mut clear_color: ResMut<ClearColor>,
+    egui_wants_input: Res<EguiWantsInput>,
     input: Res<ButtonInput<MouseButton>>,
+    mut pan_cam: Single<&mut PanCam>,
     picking_query: Query<(&ShapeState, &PickingInteraction), Changed<PickingInteraction>>,
 ) {
     // Update background
     clear_color.0 = convert_color(global_state.background_color);
+
+    // Deactivate panning and zooming if mouse is over UI
+    pan_cam.enabled = !egui_wants_input.is_pointer_over_area();
 
     // Pick shape
     if input.just_pressed(MouseButton::Right) {
