@@ -859,6 +859,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7ef8e4b7e61dfe7719bb03c884dc270cd46a82efb40f93e9933b990c5c190c59"
 
 [[package]]
+name = "bevy_pancam"
+version = "0.19.0"
+source = "git+https://github.com/johanhelsing/bevy_pancam.git?rev=706a98fb0f987b0a15d2485bd57028ab39cb0bdc#706a98fb0f987b0a15d2485bd57028ab39cb0bdc"
+dependencies = [
+ "bevy",
+ "bevy_egui",
+]
+
+[[package]]
 name = "bevy_pbr"
 version = "0.17.2"
 source = "git+https://github.com/jakoschiko/bevy.git?branch=default-event-handling#67cf510a751bb9644f0db8bb8313b064cae4849e"
@@ -1103,6 +1112,7 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "bevy_egui",
+ "bevy_pancam",
  "bevy_smud",
  "egui_extras",
  "getrandom",
